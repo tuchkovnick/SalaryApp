@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30711.63
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalaryApp", "SalaryApp\SalaryApp.csproj", "{355FD2D0-5328-4CFD-90AF-BF3482A5A1AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ColleguesLibrary", "ColleguesLibrary\ColleguesLibrary.csproj", "{7A179C67-B700-497B-B957-E00069BFBD0C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{355FD2D0-5328-4CFD-90AF-BF3482A5A1AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{355FD2D0-5328-4CFD-90AF-BF3482A5A1AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{355FD2D0-5328-4CFD-90AF-BF3482A5A1AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{355FD2D0-5328-4CFD-90AF-BF3482A5A1AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A179C67-B700-497B-B957-E00069BFBD0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A179C67-B700-497B-B957-E00069BFBD0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A179C67-B700-497B-B957-E00069BFBD0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A179C67-B700-497B-B957-E00069BFBD0C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A293B6AD-81A8-4FEE-822D-78D0FF0F4543}
+	EndGlobalSection
+EndGlobal
