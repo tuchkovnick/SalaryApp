@@ -200,12 +200,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Описание решения.txt" />
-    <Resource Include="description.txt" />
+    <Resource Include="описание\Описание решения.txt" />
     <Resource Include="img\subordination.png" />
     <Resource Include="img\remove.png" />
     <Resource Include="img\plus.png" />
-    <Resource Include="AdminPswInfo.txt" />
+    <Resource Include="описание\another_description.jpg" />
     <Content Include="CompanyDatabase.db" />
   </ItemGroup>
   <ItemGroup>
