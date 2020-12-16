@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SalaryApp.Model.FunctionalityProviders
 {
@@ -12,9 +13,13 @@ namespace SalaryApp.Model.FunctionalityProviders
         //интерфейс ввода пароля
         public static string GetPasswordFromPasswordWindow()
         {
-            PasswordCheckWindow pcw = new PasswordCheckWindow();
-            pcw.ShowDialog();
-            return pcw.password;
+            string password = Application.Current.Dispatcher.Invoke(() =>
+            {
+                PasswordCheckWindow pcw = new PasswordCheckWindow();
+                pcw.ShowDialog();
+                return pcw.password;
+            });
+            return password;
         }
 
         //получение хеша пароля администратора

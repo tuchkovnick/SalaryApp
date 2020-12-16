@@ -82,10 +82,8 @@ namespace SalaryApp.ViewModel
             get => new RelayCommand(() =>
             {
                 try
-                {                    
-                    mainModel.SalaryProcessor(
-                        mainModel.GetWage(SelectedEmployeeIdx, SelectedDate)
-                        );
+                {
+                    mainModel.CalcAndShowSalary(SelectedEmployeeIdx, SelectedDate);                        
                 }
                 catch (Exception exc)
                 {
@@ -100,9 +98,7 @@ namespace SalaryApp.ViewModel
             {
                 try
                 {
-                    mainModel.SalaryProcessor(
-                        mainModel.GetCompanyWage(SelectedDate)
-                        );
+                    mainModel.CalcAndShowCompanySalary(SelectedDate);
                 }
                 catch(Exception exc)
                 {
