@@ -1,5 +1,4 @@
 ﻿using ColleguesLibrary.Classes;
-using ColleguesLibrary.Interfaces;
 using SalaryApp.Model.TableModels;
 using System;
 using System.Collections.Generic;

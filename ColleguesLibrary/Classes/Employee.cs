@@ -15,7 +15,7 @@ namespace ColleguesLibrary.Classes
         public double WageRate { get; set; }
         public DateTime EmploymentDate { get; set; }
         public EmployeeType Type { get; set; }
-        public Employee(string fio,  double wageRate, DateTime employmentDate, EmployeeType type)
+        public Employee(string fio,  double wageRate, DateTime employmentDate)
         {
             Fio = fio;
             WageRate = wageRate;
@@ -25,7 +25,13 @@ namespace ColleguesLibrary.Classes
 
         private readonly Lazy<List<Employee>> _subordinates =
             new Lazy<List<Employee>>();
-
+        
+        public Employee SetType(EmployeeType type)
+        {
+            Type = type;
+            return this;
+        }
+        
         public void AddSubordinate(Employee subordinate)
         {
             if (Type != EmployeeType.Worker)
@@ -33,10 +39,12 @@ namespace ColleguesLibrary.Classes
                 _subordinates.Value.Add(subordinate);
             }
         }
+        
         public List<Employee> GetDirectSubordinates()
         {
             return Type == EmployeeType.Worker? null : _subordinates.Value;
         }
+        
         public List<Employee> GetAllSubordinates()
         {
             if(Type == EmployeeType.Worker)

@@ -33,6 +33,8 @@ namespace ColleguesLibrary.Classes
                     _salaryCalcFunction = CalcFunctions.CalcSalesmanSalary;
                     break;
                 }
+                default:
+                    throw new Exception("Employee type undefined");
             }
 
             return _salaryCalcFunction(employee, time);
