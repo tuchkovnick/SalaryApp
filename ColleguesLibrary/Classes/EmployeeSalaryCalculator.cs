@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ColleguesLibrary.Classes.Calculators;
 
 namespace ColleguesLibrary.Classes
 {
@@ -12,7 +13,7 @@ namespace ColleguesLibrary.Classes
             return _instance ?? (_instance = new EmployeeSalaryCalculator());
         }
 
-        private Func<Employee, DateTime, double> _salaryCalcFunction;
+        private ICalculator _calculator;
 
         public double CalculateSalary(Employee employee, DateTime time)
         {
@@ -20,24 +21,24 @@ namespace ColleguesLibrary.Classes
             {
                 case EmployeeType.Worker:
                 {
-                    _salaryCalcFunction = CalcFunctions.CalcWorkerSalary;
+                    _calculator = new WorkerCalculator();
                    break;
                 }
                 case EmployeeType.Manager:
                 {
-                    _salaryCalcFunction = CalcFunctions.CalcManagerSalary;
+                    _calculator = new ManagerCalculator();
                     break;
                 }
                 case EmployeeType.Salesman:
                 {
-                    _salaryCalcFunction = CalcFunctions.CalcSalesmanSalary;
+                    _calculator = new WorkerCalculator();
                     break;
                 }
                 default:
                     throw new Exception("Employee type undefined");
             }
 
-            return _salaryCalcFunction(employee, time);
+            return _calculator.CalcSalary(employee, time);
         }
 
 
