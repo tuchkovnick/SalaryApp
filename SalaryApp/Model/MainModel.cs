@@ -17,14 +17,14 @@ namespace SalaryApp.Model
         public ClassConverter converter; //конвертер классов из БД в бизнес-модель
         public ApplicationContext context;
         public ObservableCollection<CompanyEmployee> EmployeesFromDb;
-        
+
         public Action<double> SalaryProcessor;  //отображение заработной платы 
-        public Func<string,string, bool> PasswordChecker; //алгоритм проверки пароля
+        public Func<string, string, bool> PasswordChecker; //алгоритм проверки пароля
         public Func<string> PasswordInput; //ввод пароля
         public Action<List<string>> SubordinatesViewer;
         public Func<string> AdminPasswordReceiver;
 
-        public MainModel (Action<double> salaryProcessor,                           
+        public MainModel(Action<double> salaryProcessor,
                           Func<string> passwordInput,
                           Func<string, string, bool> passwordChecker,
                           Action<List<string>> subordinatesViewer,
@@ -37,19 +37,52 @@ namespace SalaryApp.Model
             converter = new ClassConverter(context);
 
             SalaryProcessor = salaryProcessor;
-            PasswordInput= passwordInput;
+            PasswordInput = passwordInput;
             PasswordChecker = passwordChecker;
             SubordinatesViewer = subordinatesViewer;
             AdminPasswordReceiver = adminPasswordReceiver;
         }
-        
+
+        public async void CalcAndShowSalary(int SelectedEmployeeIdx, DateTime SelectedDate)
+        {
+            try
+            {
+                await Task.Run(
+                    ()=>SalaryProcessor(
+                    GetWage(SelectedEmployeeIdx, SelectedDate)
+                    )
+                );
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
+        }
+
+        public async void CalcAndShowCompanySalary(DateTime SelectedDate)
+        {
+            try
+            {
+                await Task.Run(
+                    () => SalaryProcessor(
+                    GetCompanyWage(SelectedDate)
+                    )
+                );
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
+        }
+
         public ObservableCollection<CompanyEmployee> GetEmployeesDescription()
         {
             return EmployeesFromDb;
         }
         
-        public double GetWage(int idx, DateTime wageTime)
+        private double GetWage(int idx, DateTime wageTime)
         {
+
             Employee employee = converter.GetEmployee(EmployeesFromDb[idx]); 
             
             if(employee.EmploymentDate > wageTime)
@@ -78,7 +111,7 @@ namespace SalaryApp.Model
             throw new Exception("У Вас отсутствуют права доступа");      
         }
 
-        public double GetCompanyWage(DateTime wageTime)
+        private double GetCompanyWage(DateTime wageTime)
         {
             string password = PasswordInput != null ? PasswordInput() : "";
             if(password.Length > 0)
@@ -101,27 +134,49 @@ namespace SalaryApp.Model
             throw new Exception("У Вас отсутствуют права доступа");
         }
     
-        public void RemoveEmployee(int idx)
+        public async void RemoveEmployee(int idx)
         {
-            context.CompanyEmployees.Remove(context.CompanyEmployees.Local[idx]);
-            context.SaveChanges();
+            try
+            {
+                await Task.Run(() => 
+                { 
+                    context.CompanyEmployees.Remove(context.CompanyEmployees.Local[idx]);
+                    context.SaveChanges();
+                }
+                );
+            }
+            catch(Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
         }
 
-        public void ShowSubordinates(int idx)
+        public async void ShowSubordinates(int idx)
         {
-            Employee employee = converter.GetEmployee(EmployeesFromDb[idx]);
-            var subordinates = employee.GetAllSubordinates();
-            List<string> subDescr;
-            if (subordinates == null || subordinates.Count == 0)
+            try
             {
-                subDescr = new List<string>();
-                subDescr.Add("Нет подчинённых!");
+                await Task.Run(() =>
+                {
+                    Employee employee = converter.GetEmployee(EmployeesFromDb[idx]);
+                    var subordinates = employee.GetAllSubordinates();
+                    List<string> subDescr;
+                    if (subordinates == null || subordinates.Count == 0)
+                    {
+                        subDescr = new List<string>();
+                        subDescr.Add("Нет подчинённых!");
+                    }
+                    else
+                    {
+                        subDescr = subordinates.Select(s => string.Format("{0}, трудоустоен {1}", s.Fio, s.EmploymentDate.ToString())).ToList();
+                    }
+                    SubordinatesViewer(subDescr);
+                });
+
             }
-            else
+            catch (Exception exc)
             {
-                subDescr = subordinates.Select(s => string.Format("{0}, трудоустоен {1}", s.Fio, s.EmploymentDate.ToString())).ToList();
+                MessageBox.Show(exc.Message);
             }
-            SubordinatesViewer(subDescr);
         }
 
         public void AddEmployee()
