@@ -1,65 +1,54 @@
-﻿using ColleguesLibrary.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ColleguesLibrary.Classes
 {
-    public class Employee : IWorker
+    public enum EmployeeType
     {
-        #region private variables
-        private int _id;
-        private string _fio;
-        private double _wageRate;
-        private DateTime _employmentDate;
-        #endregion
-        public int Id
+        Worker,
+        Manager,
+        Salesman
+    }
+    public class Employee
+    {
+        public string Fio { get; set; }
+        public double WageRate { get; set; }
+        public DateTime EmploymentDate { get; set; }
+        public EmployeeType Type { get; set; }
+        public Employee(string fio,  double wageRate, DateTime employmentDate, EmployeeType type)
         {
-            get => _id;
-            set => _id = value;
-        }       
-        public string Fio
-        {
-            get => _fio;
-            set => _fio = value;
-        }        
-        public double WageRate
-        {
-            get => _wageRate;
-            set => _wageRate = value;
+            Fio = fio;
+            WageRate = wageRate;
+            EmploymentDate = employmentDate;
+            Type = type;
         }
-        public DateTime EmploymentDate
+
+        private readonly Lazy<List<Employee>> _subordinates =
+            new Lazy<List<Employee>>();
+
+        public void AddSubordinate(Employee subordinate)
         {
-            get => _employmentDate;
-            set => _employmentDate = value;
-        }
-        public Employee(int Id, 
-                        string Fio, 
-                        double WageRate, 
-                        DateTime EmploymentDate
-                        )
-        {
-            this.Id = Id;
-            this.Fio = Fio;
-            this.WageRate = WageRate;
-            this.EmploymentDate = EmploymentDate;
-        }
-        public virtual double GetWage(DateTime time)
-        {
-            var Wage = WageRate;            
-            var span = time - EmploymentDate;
-            int years = span.Days / 365;
-            var MaxWage = WageRate * 1.3;
-            while (years-- > 0 && Wage < MaxWage)
+            if (Type != EmployeeType.Worker)
             {
-                Wage += WageRate * 0.03;
+                _subordinates.Value.Add(subordinate);
+            }
+        }
+        public List<Employee> GetDirectSubordinates()
+        {
+            return Type == EmployeeType.Worker? null : _subordinates.Value;
+        }
+        public List<Employee> GetAllSubordinates()
+        {
+            if(Type == EmployeeType.Worker)
+                return null;
+            
+            List<Employee> allSubordinates = new List<Employee>(_subordinates.Value);
+            foreach (var employee in _subordinates.Value)
+            {
+                allSubordinates.AddRange(employee.GetAllSubordinates());
             }
 
-            return Math.Round(Wage,2);
-        }    
-       
-        public virtual List<Employee> GetAllSubordinates()
-        {
-            return null;
+            return allSubordinates;
         }
     }
 }
