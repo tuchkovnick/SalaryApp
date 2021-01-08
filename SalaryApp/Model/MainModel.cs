@@ -90,8 +90,9 @@ namespace SalaryApp.Model
                 throw new Exception("Выберите дату позднее даты трудоустройства сотрудника.");
             }
             string password = PasswordInput != null? PasswordInput():"";
-            
-            List<string> allPossiblePasswordInfos = new List<string>();// хеши сотрудника и его начальников
+
+            // hashes of employee and his/her boss
+            List<string> allPossiblePasswordInfos = new List<string>();
             
             allPossiblePasswordInfos.AddRange(converter.GetEmployeePasswords(EmployeesFromDb[idx]));
             string adminPswInfo = AdminPasswordReceiver();
@@ -103,9 +104,9 @@ namespace SalaryApp.Model
             
             foreach(string passInfo in allPossiblePasswordInfos)
             {
-                if (PasswordChecker!=null ? PasswordChecker(password, passInfo):true)
+                if (PasswordChecker?.Invoke(password, passInfo) ?? true)
                 {
-                    return employee.GetWage(wageTime);
+                    return EmployeeSalaryCalculator.GetInstance().CalculateSalary(employee, wageTime);
                 }
             }
             throw new Exception("У Вас отсутствуют права доступа");      
@@ -126,7 +127,7 @@ namespace SalaryApp.Model
                             continue;
                         }
                         Employee e = converter.GetEmployee(employee);
-                        overallSalary += e.GetWage(wageTime);
+                        overallSalary += EmployeeSalaryCalculator.GetInstance().CalculateSalary(e, wageTime);
                     }
                     return overallSalary;
                 }

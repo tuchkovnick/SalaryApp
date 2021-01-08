@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ColleguesLibrary.Classes.Calculators
 {
-    public interface ICalculator
+    internal interface ICalculator
     {
         double CalcSalary(Employee employee, DateTime time);
     }

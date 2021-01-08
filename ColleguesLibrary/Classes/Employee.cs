@@ -20,7 +20,6 @@ namespace ColleguesLibrary.Classes
             Fio = fio;
             WageRate = wageRate;
             EmploymentDate = employmentDate;
-            Type = type;
         }
 
         private readonly Lazy<List<Employee>> _subordinates =
@@ -32,14 +31,15 @@ namespace ColleguesLibrary.Classes
             return this;
         }
         
-        public void AddSubordinate(Employee subordinate)
+        public void AddSubordinates(IEnumerable<Employee> subordinates)
         {
             if (Type != EmployeeType.Worker)
             {
-                _subordinates.Value.Add(subordinate);
+                _subordinates.Value.AddRange(subordinates);
             }
         }
         
+
         public List<Employee> GetDirectSubordinates()
         {
             return Type == EmployeeType.Worker? null : _subordinates.Value;
@@ -53,7 +53,10 @@ namespace ColleguesLibrary.Classes
             List<Employee> allSubordinates = new List<Employee>(_subordinates.Value);
             foreach (var employee in _subordinates.Value)
             {
-                allSubordinates.AddRange(employee.GetAllSubordinates());
+                if (employee.Type != EmployeeType.Worker)
+                {
+                    allSubordinates.AddRange(employee.GetAllSubordinates());
+                }
             }
 
             return allSubordinates;

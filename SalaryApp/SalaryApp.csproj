@@ -203,7 +203,6 @@
     <Resource Include="img\subordination.png" />
     <Resource Include="img\remove.png" />
     <Resource Include="img\plus.png" />
-    <Resource Include="описание\description.jpg" />
     <Content Include="CompanyDatabase.db" />
   </ItemGroup>
   <ItemGroup>

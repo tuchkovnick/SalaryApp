@@ -38,9 +38,8 @@ namespace SalaryApp.ViewModel
         }
 
         #region  private variables
-        string _databaseFile;
         int _selectedEmployeeIdx;
-        DateTime selectedDate;
+        DateTime _selectedDate;
         #endregion
 
         #region fields
@@ -55,22 +54,13 @@ namespace SalaryApp.ViewModel
                 RaisePropertyChanged("SelectedEmployee");
             }
         }        
-        public string DatabaseFile
-        {
-            get => _databaseFile;
-            set
-            {
-                _databaseFile = value;
-                RaisePropertyChanged("DatabaseFile");
-            }
-        }
 
         public DateTime SelectedDate
         {
-            get => selectedDate;
+            get => _selectedDate;
             set
             {
-                selectedDate = value;
+                _selectedDate = value;
                 RaisePropertyChanged("SelectedDate");
             }
         }

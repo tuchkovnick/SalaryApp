@@ -11,53 +11,37 @@ namespace SalaryApp.Model
 {
     public class ClassConverter
     {
-        private ApplicationContext _context;
+        private readonly ApplicationContext _context;
         public ClassConverter(ApplicationContext context)
         {
             this._context = context;
         }
 
-        //конвертер классов из БД в бизнес модель
+        //database -> buisness model
         public Employee GetEmployee (CompanyEmployee companyEmployee)
-        {            
-            switch (companyEmployee.Position)
+        {
+            var employee = new Employee(companyEmployee.FIO, companyEmployee.WageBase, companyEmployee.EmploymentDate);
+            bool isPositionValid = Enum.TryParse(companyEmployee.Position, out EmployeeType type);
+            if (isPositionValid)
             {
-                case "Employee":
-                    {
-                        Employee employee = new Employee(companyEmployee.Id, companyEmployee.FIO, 
-                                                            companyEmployee.WageBase, companyEmployee.EmploymentDate
-                                                            );
-                        return employee;
-                    }
-                case "Manager":
-                    {
-                        //get subordinates
-                        Manager employee = new Manager(companyEmployee.Id, companyEmployee.FIO, 
-                                                       companyEmployee.WageBase, companyEmployee.EmploymentDate,
-                                                       null);
-                        employee.DirectSubordinates = GetSubordinates(employee);
-                        return employee;
-                    }
-                case "Salesman":
-                    {
-                        //get subordinates
-                        Salesman employee = new Salesman(companyEmployee.Id, companyEmployee.FIO, 
-                                                         companyEmployee.WageBase, companyEmployee.EmploymentDate, 
-                                                         null);
-                        employee.DirectSubordinates = GetSubordinates(employee);
-                        return employee;
-                    }
+                employee.SetType(type);
+                employee.AddSubordinates(GetSubordinatesOfId(companyEmployee.Id));
             }
-            throw new Exception("Неизвестная должность!");
+            else
+            {
+                throw new Exception("Position is not valid!");
+            }
+            return employee;
+
         }
         
-        //устанавливает всех прямых подчинённых сотрудника на основании БД
-        private List<Employee> GetSubordinates(Manager boss)
+        // gets subordinates from database
+        private List<Employee> GetSubordinatesOfId(int id)
         {
             List<Employee> subordinates = new List<Employee>();
             _context.CompanyRelations.Load();
             //
-            var relations = _context.CompanyRelations.Local.Where(r => r.BossId == boss.Id);
+            var relations = _context.CompanyRelations.Local.Where(r => r.BossId == id);
 
             var subordinateIds = relations.Select(s => s.SubordinateId);
             var subs = _context.CompanyEmployees.Where(e => subordinateIds.Contains(e.Id)).ToList();
@@ -69,7 +53,7 @@ namespace SalaryApp.Model
             return subordinates;
         }
     
-        //возвращает легитимные хеши для данного пользователя
+        //gets hashes
         public List<string> GetEmployeePasswords(CompanyEmployee companyEmployee)
         {
             List<string> passwordInfos = new List<string>();
